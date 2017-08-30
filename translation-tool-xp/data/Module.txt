@@ -1,0 +1,299 @@
+﻿module LANG
+  
+  #replace 'xx' with the abreviation of the language
+  $tmp = "xx"
+  
+  #type here the full name of the language
+  LANGUAGES[$tmp] = "Language"
+  
+  #--------Convert_bloc-----------
+  #Use this bloc to convert specials characters.
+  #If you do not need it, delete it.
+  #
+  #How to use:
+  #@text.gsub!(/character_to_convert/) { "converted_character" }
+  #
+  #---------------------------begin
+  #CONVERTERS.push($tmp)
+  #def self.convert_xx
+    #@text.gsub!(/ /) { " " }
+    #@text.gsub!(/ /) { " " }
+    #...
+    #@text
+  #end
+  #---------------------------end
+  
+  module Options
+    
+    #these are the Options menu texts
+    TEXTS[$tmp] =
+    [
+    "Options",
+    "Windowed",
+    "Full Screen",
+    "Display",
+    "Brightness",
+    "Musics",
+    "Sounds",
+    "Language",
+    "Cancel",
+    "Confirm",
+    "End",
+    "Welcome !",
+    ""
+    ]
+    
+  end
+
+  #==============================================================================
+  # ■ Module Talkie
+  #------------------------------------------------------------------------------
+  # = Contain texts for the Talkie
+  #==============================================================================
+
+  module Talkie
+    
+    PLACES[$tmp] =
+      [
+      "PARK_",
+      "LABORATORY_",
+      "AQUATIC CONTROL SPOT_",
+      "FROZEN FOREST_",
+      "UNKNOWN PLACE_",
+      "SPACE CONTROL AREA_",
+      "UNDERGROUNDS_",
+      "UNKNOWN PLACE_"
+      ]
+      
+      OBJECT_NAME[$tmp] =
+      [
+      "A BIG TREE",
+      "A PRETTY FLOWER",
+      "OUR PICNIC",
+      "KIMCHI NOODLES",
+      "HELENE'S BOOKS",
+      "LUCERNE",
+      "SIERRE",
+      "NYON",
+      "COIRE",
+      "DAVOS",
+      "VEVEY",
+      "ZOUG",
+      "THOUNE",
+      "FRIBOURG",
+      "SORAL",
+      "A RIGHT ARM",
+      "A LEFT ARM",
+      "A PAIR OF LEGS",
+      "A TORSO",
+      "A HEAD"
+      ]
+    
+      OBJECT_TEXT[$tmp] = 
+      [
+      ["_TROUVE DANS L'A.C.S.",
+      "_IL EST ETONNAMENT BIEN ENTRETENU",
+      "_MALGRE SON IMMERSION DANS L'EAU.",
+      "_2,512RF DE MEMOIRE INTERNE_"],
+      
+      ["_TROUVEE DANS LA FORET GELEE",
+      "_LE FROID GLACIAL SEMBLE L'AVOIR",
+      "_PRESERVE DU MANQUE DE SOLEIL.",
+      "_0,084RF DE MEMOIRE INTERNE_"],
+        
+      ["TROUVE DANS LE S.C.A.",
+      "_UN PANIER A PICNIC CONTENANT",
+      "_2 POMMES, 2 SANDWICHES ET DE L'EAU.",
+      "_0,115RF DE MEMOIRE INTERNE_"],
+      
+      ["TROUVEES DANS LA FORET GELEE",
+      "_NOUILLES INSTANTANEES AU KIMCHI",
+      "_SAVEUR HAUTEMENT PIMENTEE !",
+      "_1,004RF DE MEMOIRE INTERNE_"],
+      
+      ["TROUVES DANS LES SOUTERRAINS",
+      "_LIVRES TECHNIQUES ET PRISES DE",
+      "_NOTES APPARTENANTS A HELENE",
+      "_4,506RF DE MEMOIRE INTERNE_"],
+      
+      ["SCANNEE DANS LA FORET GELEE",
+      "_ELLE PEUT GENERER SUFFISAMENT",
+      "_D'ELECTRICITE POUR ALLUMER UN FEU.",
+      "_142DF DE DONNEES STOCKEES_"],
+      
+      ["SCANNEE DANS UN ENDROIT INCONNU",
+      "_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "_001DF DE DONNEES STOCKEES_"],
+      
+      ["SCANNEE DANS LE LABORATOIRE",
+      "_DE LA FAMILLE DES ANGUILLUM GLABRUS",
+      "_SES MUCUS LA RENDENT GLISSANTE.",
+      "_172DF DE DONNEES STOCKEES_"],
+      
+      ["SCANNEE DANS LE LABORATOIRE",
+      "_SON CORPS PEUT RESISTER A DES",
+      "_TEMPERATURES GLACIALES",
+      "_193DF DE DONNEES STOCKEES_"],
+        
+      ["SCANNE DANS LA FORET GELEE",
+      "_DE LA FAMILLE DES PESCUM TIPICAE",
+      "_SA PEAU EST EPAISSE.",
+      "_116DF DE DONNEES STOCKEES_"],
+      
+      ["SCANNE DANS UN ENDROIT INCONNU",
+      "_XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "_XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "_001DF DE DONNEES STOCKEES_"],
+      
+      ["SCANNES DANS LES SOUTERRAINS",
+      "_UN BANC DE TROIS POISSONS",
+      "_A CONSCIENT COLLECTIF",
+      "_199DF DE DONNEES STOCKEES_"],
+      
+      ["SCANNEE DANS LE S.C.A.",
+      "_DE LA FAMILLE DES MOTI LUNATICEA",
+      "_ELLE N'EST PAS TRES SOUPLE",
+      "_134DF DE DONNEES STOCKEES_"],
+        
+      ["SCANNE DANS LES SOUTERRAINS",
+      "_UN POISSON DE MER QUI",
+      "_S'ADAPTE VITE A L'EAU DOUCE",
+      "_126DF DE DONNEES STOCKEES_"],
+      
+      ["SCANNE DANS LE PARC",
+      "_UN POISSON COMMUN.",
+      "_IL EST CALME",
+      "_100DF DE DONNEES STOCKEES_"],
+      
+      ["TROUVE DANS L'A.C.S.",
+      "_DISSOCIE DU TRONC AU NIVEAU",
+      "_DE LA JOINTURE AVEC CELUI-CI",
+      "_STOCKE DANS LE FRIGO_",],
+        
+      ["TROUVE DANS LE PARC",
+      "_SEPARE DU TRONC DE MANIERE NET.",
+      "_SEMBLE DOTE DE JUGEMENT ET MEMOIRE.",
+      "_STOCKE DANS LE FRIGO_"],
+      
+      ["TROUVE DANS LA FORET GELEE",
+      "_N'ONT SUBIES AUCUN DOMMAGES.",
+      "_LES DEUX JAMBES SONT IDENTIQUES.",
+      "_STOCKE DANS LE FRIGO_"],
+      
+      ["TROUVE DANS LE LABORATOIRE",
+      "_REUNI LES ORGANES VITAUX DU",
+      "_SUJET A RECONSTRUIRE",
+      "_STOCKE DANS LE FRIGO_"],
+      
+      ["TROUVEE DANS LE PARC",
+      "_LES CAPACITES CEREBRALES",
+      "_SONT OPERATIONNELLES.",
+      "_STOCKE DANS LE FRIGO_"]
+      ]
+
+  #==============================================================================
+  # END Talkie
+  #==============================================================================
+  end
+
+  #==============================================================================
+  # ■ Module Book
+  #------------------------------------------------------------------------------
+  # = Contain the contents of the 'Book'
+  #==============================================================================
+
+  module Book
+    
+      NAMES[$tmp] = 
+      [
+      "Indekso", 
+      "Dobum", 
+      "Hélène", 
+      "Anna-Maria", 
+      "Neuhausen", 
+      "Worm",
+      "The Mouses", 
+      "The Turtles", 
+      "The Penguins", 
+      "Davos & Lucerne",
+      "Fribourg & Zoug", 
+      "Coire & Nyon", 
+      "Vevey & Sierre", 
+      "Thoune & Soral",
+      "Carton", 
+      "Iell", 
+      "You"
+      ]
+
+      TEXTS[$tmp] =
+      {"Indekso" =>
+          "Dobum_Hélène_" +
+          "Anna-Maria_" +
+          "Neuhausen_" +
+          "Worm_" +
+          "The Mouses_" +
+          "The Turtles_" +
+          "The Penguins_" +
+          "Davos & Lucerne_" +
+          "Fribourg & Zoug_" +
+          "Coire & Nyon_" +
+          "Vevey & Sierre_" +
+          "Thoune & Soral_" +
+          "Carton_" +
+          "Iell_" +
+          "You",
+        
+      "Dobum" => 
+        "",
+      
+      "Hélène" =>
+        "",
+      
+      "Anna-Maria" =>
+        "",
+      
+      "Neuhausen" =>
+        "",
+      
+      "Ver" =>
+        "",
+      
+      "The Mouses" =>
+      "",
+      
+       "The Turtles" =>
+      "",
+      
+       "The Penguins" =>
+      "",
+      
+       "Davos & Lucerne" =>
+      "",
+      
+      "Fribourg & Zoug" =>
+      "",
+      
+       "Coire & Nyon" =>
+      "",
+      
+       "Vevey & Sierre" =>
+      "",
+      
+       "Thoune & Soral" =>
+      "",
+      
+      "Carton" =>
+      "",
+      
+       "Iell" =>
+        "",
+      
+       "You" => ""
+      }
+      
+  #==============================================================================
+  # ● END BOOK MODULE
+  #==============================================================================
+  end
+end
