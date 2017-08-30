@@ -6,6 +6,7 @@ My TODO list:
 - add comments everywhere !
 - clean up the scripts
 - implement the common events writing methods
+- implement a multilanguage interface & methods
 
 My whishlist:
 - migrate the project to a open rgss interpreter
