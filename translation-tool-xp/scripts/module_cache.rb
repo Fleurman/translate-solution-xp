@@ -1,6 +1,6 @@
 module RPG
   module Cache
-    def self.windowskin(filename)
+    def self.img(filename)
       self.load_bitmap("Data/", filename)
     end
   end
@@ -15,5 +15,5 @@ module Math
 			return value
 		end
 	end
-	
+
 end

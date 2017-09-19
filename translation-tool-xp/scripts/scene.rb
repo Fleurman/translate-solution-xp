@@ -8,12 +8,14 @@ class Scene
   def initialize
 		@index = 0
 		@window = Window_Base.new(0,0,640,480)
-		@window.title("XP Translate Tool",35)
+		@window.title("Translate Tool XP",35)
 		@window.active = true
+		@icons = [Sprite.new,Sprite.new]
 		@help = Window_Help.new
 		@select_menu = Window_SelectMenu.new
 		@win_append = Window_Append.new
 		draw_items
+		#draw_icons
 		$help_text = Texts::help[@index]
 		$new = ""
 		@help.refresh
@@ -25,11 +27,16 @@ class Scene
 	def draw_items
 		@window.item(Rect.new(0,0,96,20),Texts::gui[0],1,20)
 		@window.item(Rect.new(0,20,96,20),Texts::gui[1],1,20)
-		@a = Texts::items
-		for i in 0..@a.size-1
+		a = Texts::items
+		for i in 0..a.size-1
 			ali = i%2 == 0 ? 0 : 2
-			@window.item(get_rect(i),@a[i],ali)
+			@window.item(get_rect(i),a[i],ali)
 		end
+	end
+	
+	def draw_icons
+		@window.icon(132,310,RPG::Cache.img("Extract"))
+		@window.icon(410,310,RPG::Cache.img("Import"))
 	end
 	
 #------------------------------------------------------------------------
@@ -40,7 +47,7 @@ class Scene
 		c.truncate
 		m = (id)%2
 		r = Rect.new(0,0,216,48)
-		r.x = 86 + 216*m
+		r.x = 80 + 228*m
 		r.y = 118 + 52*c
 		r
 	end
@@ -121,7 +128,7 @@ class Scene
 				@help.refresh
 				Input.update
 			elsif @index == 1
-				@select_menu.open("write")
+				@select_menu.open("import")
 				@window.cursor_rect.empty
 				$help_text = Texts::help[-6]
 				@help.refresh
@@ -136,7 +143,7 @@ class Scene
 					break if !@win_append.visible
 				end
 			elsif @index == 3
-				Write::write_all_maps
+				Import::import_all_maps
 				Input.update
 			elsif @index == 4
 				print("Work In Progress")
@@ -144,14 +151,23 @@ class Scene
 				Input.update
 			elsif @index == 5
 				print("Work In Progress")
-				#Write::write_modules
+				#Import::import_modules
 				Input.update
 			elsif @index == 6
-				Extract::extract_comm_events
-				Input.update
-			elsif @index == 5
-				print("Work In Progress")
-				#Write::write_comm_events
+			
+				@win_append.open("commons")
+				loop do 
+					Graphics.update
+					Input.update
+					@win_append.update
+					break if !@win_append.visible
+				end
+				
+				# Extract::extract_comm_events
+				# Input.update
+			elsif @index == 7
+				#print("Work In Progress")
+				Import::import_all_common_events
 				Input.update
 			end
 		elsif Input.trigger?(Input::SHIFT)

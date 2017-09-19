@@ -1,37 +1,32 @@
-#########################################################################
-#
-#								Extract Module
-#
-#
-#########################################################################
+#############################################################################
+#																			#
+#								Extract Module								#
+#																			#
+#############################################################################
 
 module Extract
 	
-	#========================================================================
-	# = Get Maps Array
-	#		This method is executed before all. It display a 'Welcome' message.
-	#========================================================================
-	#		Check in '%Parent Folder%/Data' for the 'MapXXX.rxdata' files
-	#		then makes an array of the Maps that contain some text.
-	#------------------------------------------------------------------------
-	#		-$maps_id: 	array of the maps number that contain text
-	#		-$maps: 		number of maps available for translation
-	#========================================================================
+	@welcome = Sprite.new	
+	
+	#=======================================================================#
+	# = Get Maps Array =													#
+	#	This method is executed before all. It display a 'Welcome' message.	#
+	#=======================================================================#
+	#	-Check in '%Parent Folder%/Data' for the 'MapXXX.rxdata' files		#
+	#	-then makes an array of the Maps that contain some text.			#
+	#-----------------------------------------------------------------------#
+	#		-$maps_id: 	array of the maps number that contain text			#
+	#		-$maps: 		number of maps available for translation		#
+	#=======================================================================#
 	def self.get_maps_array
 		
-		s = Sprite.new
-		s.bitmap = Bitmap.new(640,480)
-		s.bitmap.font.name = $fontname
-		s.bitmap.font.color = Color.new(220,220,220)
-		s.bitmap.font.size = 60
-		s.bitmap.draw_text(0,0,640,480,Texts::gui[5],1)
+		self.show_welcome()
 		
 		d = Dir.entries("#{$ROOT}/Data").to_s
 		dd = d.scan(/Map(\d+)/)
 		dd.flatten!
 		arr = []
 		dd = dd.each{|i| arr.push(i.to_i)}
-		#arr = ddd
 		na = []
 		
 		for i in arr
@@ -53,8 +48,21 @@ module Extract
 		
 		$maps_name = names
 		
-		s.dispose
+		@welcome.dispose
 		
+	end
+	
+	#========================================================================
+	# = Show Welcome
+	#========================================================================
+	#		Create and display a 'Welcome' text
+	#========================================================================
+	def self.show_welcome
+		@welcome.bitmap = Bitmap.new(640,480)
+		@welcome.bitmap.font.name = $fontname
+		@welcome.bitmap.font.color = Color.new(220,220,220)
+		@welcome.bitmap.font.size = 60
+		@welcome.bitmap.draw_text(0,0,640,480,Texts::gui[5],1)
 	end
 	
 	#========================================================================
@@ -125,35 +133,44 @@ module Extract
 	end
 	
 	#========================================================================
-	# = Extract Map (id = Integer)
+	# = Extract Map (i = Integer)
 	#========================================================================
-	#		Extract map 'id' into a 'MapXXX.txt' file in the '/Texts' folder
-	#		Return if the map in '%Parent Folder%/Data' does not exist or
-	#		does not contain any text.
+	#	Extract map 'id' into a 'MapXXX.txt' file in the '/Texts' folder
+	#	Return if the map in '%Parent Folder%/Data' does not exist or
+	#	does not contain any text.
 	#------------------------------------------------------------------------
-	#		-id: 	the id of the map to extract
+	#	-i: 	the id of the map to extract
 	#------------------------------------------------------------------------
-	#		FORMATTING:
-	
-	#			Header on each file---------> 	########################
-	#											####### MAP XXX ########
-	#											#        NAME          #
-	#											########################
-	#			White Spaces----------------> 	
-	#			Each pages of each events---> 	########################
-	#											###    ID - PAGE     ###
-	#											######    NAME    ######
-	#											
-	#			A Text----------------------> \Text%ev%pg%ct-
-	#			%ev: event id					First line
-	#			%pg: page number				Second line
-	#			%ct: event list number			Third line
-	#											Fourth line
-	#											...
-	#			Blank canvas (if activated)-> \aa{}
-	#			End tag---------------------> -end\
-	
-	#																		#
+	#	FORMATTING:
+	#
+	#	Header	 	##################################################
+	#	Map Name >	#------------------- MAP 001 --------------------#
+	#	Number >	#------------------- map 001 --------------------#
+	#				##################################################
+	#
+	#	* White Spaces have no effect *
+	#
+	#	Ev Header	#==============================================#
+	#	Ev Name	>	#                   Event 1                    #
+	#	Ev Number > #================== event 1 ===================#
+	#
+	#	Page >		#-----------------------------------Page 0-#
+	#
+	#	* The texts have unique id made with the ev_id, page, list_nb *				
+	#
+	#	A Text > 	\T101-		(\T: Text \S: Script) 
+	#				First line
+	#				Second line
+	#				Third line	(There is no line limit)
+	#				Fourth line
+	#				...
+	#				\aa{}		(empty language tag, if set)
+	#	End tag		-\
+	#
+	#				##################################################
+	#				#---------------- END OF MAP 001 ----------------#
+	#				##################################################
+	#
 	#========================================================================
 	def self.extract_map(i)
 		
@@ -172,9 +189,9 @@ module Extract
 		
 		# Set the Map Header
 		t = ("#"*50) + "\n"
-		tmp = "#" + " MAP #{id} ".center(48,'-') + "#"
-		t += tmp + "\n"
 		tmp = "#" + " #{infos[i].name} ".center(48,'-') + "#"
+		t += tmp + "\n"
+		tmp = "#" + " map #{id} ".center(48,'-') + "#"
 		t += tmp + "\n"
 		t += ("#"*50) + "\n\n"
 		
@@ -192,44 +209,48 @@ module Extract
 					if l.code == 355
 						c = l.parameters.to_s
 						if c.include?("choices(")
+							if !th.has_key?("#{ke}")
+								t += "#" + ("="*46) + "#\n"
+								t += "#" + " #{e.name.upcase} ".center(46,' ') + "#\n"
+								t += "#" + " event #{ke} ".center(46,'=') + "#\n\n"
+								th["#{ke}"] = true
+							end
 							if !th.has_key?("#{ke}#{p}")
-								t += "##############################\n"
-								tmp = "Event #{ke} - Page #{p} ".center(30,'#')
-								t += tmp + "\n"
-								tmp = " #{e.name.upcase} ".center(30,'#')
-								t += tmp + "\n#\n"
+								t += "#" + "Page #{p}".rjust(42,'-') + "-#\n\n"
 								th["#{ke}#{p}"] = true
 							end
-							t += "\\Text#{ke}#{p}#{counter}-\n" unless l.code ==  655
+							t += "\\S#{ke}#{p}#{counter}-\n" unless l.code ==  655
 							t += l.parameters.to_s + "\n"
-							t += "-end\\\n#\n" unless map.events[ke].pages[p].list[kl+1].code == 655
+							t += "-\\\n\n" unless map.events[ke].pages[p].list[kl+1].code == 655
 							counter += 1
 							script_take = true
 						else
 							script_take = false
 						end
 					elsif l.code == 655 && script_take
-						t += "\\Text#{ke}#{p}#{counter}-\n" unless l.code ==  655
 						t += l.parameters.to_s + "\n"
-						t += "-end\\\n#\n" unless map.events[ke].pages[p].list[kl+1].code == 655
+						t += "-\\\n\n" unless map.events[ke].pages[p].list[kl+1].code == 655
 						counter += 1
 					end
 				elsif l.code == 101 || l.code ==  401
-					if !th.has_key?("#{ke}#{p}")
+					if !th.has_key?("#{ke}")
 						t += "#" + ("="*46) + "#\n"
-						tmp = "#" + "Event #{ke} - Page #{p} ".center(46,' ') + "#"
-						t += tmp + "\n"
-						tmp = "#" + " #{e.name.upcase} ".center(46,'=') + "#"
-						t += tmp + "\n\n"
+						t += "#" + " #{e.name.upcase} ".center(46,' ') + "#\n"
+						t += "#" + " event #{ke} ".center(46,'=') + "#\n\n"
+						th["#{ke}"] = true
+					end
+					if !th.has_key?("#{ke}#{p}")
+						t += "#" + "Page #{p}".rjust(42,'-') + "-#\n\n"
 						th["#{ke}#{p}"] = true
 					end
 					add = false if l.parameters.to_s.include?("\\#{$new}")
-					t += "\\Text#{ke}#{p}#{counter}-\n" unless l.code ==  401
+					t += "\\T#{ke}#{p}#{counter}-\n" unless l.code ==  401
 					t += l.parameters.to_s + "\n"
 					unless map.events[ke].pages[p].list[kl+1].code == 401
 						t += "\\#{$new}{}\n" if add && @new
-						t += "-end\\\n\n"
+						t += "-\\\n\n"
 						add = true
+						encapsulate = true
 					end
 					counter += 1
 				end
@@ -240,7 +261,7 @@ module Extract
 		# Set the Map Footer
 		t += "#" * 50 + "\n"
 		t += "#" + " END OF MAP #{id} ".center(48,'-') + "#\n"
-		t += "#" * 50 + "\n"
+		t += "#" * 50
 		
 		Graphics.update
 		
@@ -369,8 +390,9 @@ module Extract
 	#		Extract all 'Common Events' that contain some text in a single
 	#		'CommonEvents.txt' file into the '/Texts' folder.
 	#========================================================================
-	def self.extract_comm_events
+	def self.extract_comm_events(new = false)
 		
+		@new = new
 		$busy = true
 		@progress = Window_Progress.new
 		
@@ -404,6 +426,7 @@ module Extract
 		f.close
 		
 		self.process_complete
+		$new = ""
 	end
 	
 	#========================================================================
@@ -434,9 +457,11 @@ module Extract
 		
 		return unless self.check_for_text_com(com)
 		
-		t = "#" + "="*48 + "#\n"
-		t += "#" + "Common Event #{i} - #{com.name}".center(48," ") + "#\n"
-		t += "#" + "="*48 + "#\n\n"
+		t = "#" + ("="*46) + "#\n"
+		t += "#" + " #{com.name} ".center(46," ") + "#\n"
+		t += "#" + " common event #{i} ".center(46,"=") + "#\n"
+		t += "start\n\n"
+		
 		th = {}
 		counter = 0
 		script_take = false
@@ -452,16 +477,16 @@ module Extract
 				if l.code == 355
 					c = l.parameters.to_s
 					if c.include?("choices(")
-						t += "\\Text#{i}#{counter}-\n" unless l.code ==  655
+						t += "\\S#{i}#{counter}-\n" unless l.code ==  655
 						t += l.parameters.to_s + "\n"
-						t += "-end\\\n\n" unless com.list[kl+1].code == 655
+						t += "-\\\n\n" unless com.list[kl+1].code == 655
 						counter += 1
 						script_take = true
 					end
 				elsif l.code == 655 && script_take
-					t += "\\Text#{i}#{counter}-\n" unless l.code ==  655
+					#t += "\\T#{i}#{counter}-\n" unless l.code ==  655
 					t += l.parameters.to_s + "\n"
-					t += "-end\\\n\n" unless com.list[kl+1].code == 655
+					t += "-\\\n\n" unless com.list[kl+1].code == 655
 					counter += 1
 				else
 					script_take = false
@@ -469,19 +494,19 @@ module Extract
 			elsif l.code == 101 || l.code ==  401
 				add = false if l.parameters.to_s.include?("\\#{$new}")
 				
-				t += "\\Text#{i}#{counter}-\n" unless l.code ==  401
+				t += "\\T#{i}#{counter}-\n" unless l.code ==  401
 				t += l.parameters.to_s + "\n"
 				
 				unless com.list[kl+1].code == 401
 					t += "\\#{$new}{}\n" if add && $new != ""
-					t += "-end\\\n\n"
+					t += "-\\\n\n"
 					add = true
 				end
 				
 				counter += 1
 			end
 		end
-		t += "\n"
+		t += "end\n"
 		t
 	end
 	
@@ -531,7 +556,8 @@ module Extract
 	#========================================================================
 	# = Process Complete
 	#========================================================================
-	#		Display a "Completed" text in the progress window and wait for input.
+	#		Display a "Completed" text in the 
+	#		progress window and wait for input.
 	#========================================================================
 	def self.process_complete
 		
@@ -551,7 +577,7 @@ module Extract
 		
 	end
 	
-	#------------------------------------------------------------------------
-	# END OF EXTRACT MODULE
-	#------------------------------------------------------------------------
+#############################################################################
+# 							END OF EXTRACT MODULE							#
+#############################################################################
 end

@@ -7,66 +7,66 @@
 
 class Window_Base < Window
 	
-  #--------------------------------------------------------------------------
-  #--------------------------------------------------------------------------
-	
-  def initialize(x, y, width, height)
-    super()
-		 self.contents = Bitmap.new(width,height)
-    self.windowskin = RPG::Cache.windowskin("Window")
+	#--------------------------------------------------------------------------
+	#--------------------------------------------------------------------------
+
+	def initialize(x, y, width, height)
+		super()
+		self.contents = Bitmap.new(width,height)
+		self.windowskin = RPG::Cache.img("Window")
 		self.contents.font.name = $fontname
-    self.x = x
-    self.y = y
-    self.width = width
-    self.height = height
-    self.z = 100
-  end
-	
-  #--------------------------------------------------------------------------
-  #--------------------------------------------------------------------------
-  def dispose
-    if self.contents != nil
-      self.contents.dispose
-    end
-    super
-  end
+		self.x = x
+		self.y = y
+		self.width = width
+		self.height = height
+		self.z = 100
+	end
 
-  #--------------------------------------------------------------------------
-  #--------------------------------------------------------------------------
-  def system_color
-    return Color.new(30, 30, 30)
-  end
+	#--------------------------------------------------------------------------
+	#--------------------------------------------------------------------------
+	def dispose
+		if self.contents != nil
+		  self.contents.dispose
+		end
+		super
+	end
 
-  #--------------------------------------------------------------------------
-  #--------------------------------------------------------------------------
-  def title(text,size=22,color=system_color)
+	#--------------------------------------------------------------------------
+	#--------------------------------------------------------------------------
+	def color
+		return Color.new(30, 30, 30)
+	end
+
+	#--------------------------------------------------------------------------
+	#--------------------------------------------------------------------------
+	def title(text,size=22,color=color)
 		self.contents.clear
-		#self.contents.font.name = $fontname
 		self.contents.font.size = size
 		self.contents.font.color = color
-   self.contents.draw_text(0,12,self.width-36,size,text,1)
-   self.contents.draw_text(0,size,self.width-36,size,
-	 "---------------------------------------------",1)
-  end
-  #--------------------------------------------------------------------------
-  #--------------------------------------------------------------------------
-  def text(text,align,size=22,color=system_color)
+		self.contents.draw_text(0,12,self.width-36,size,text,1)
+		self.contents.draw_text(0,size,self.width-36,size,
+		 "---------------------------------------------",1)
+	end
+	#--------------------------------------------------------------------------
+	#--------------------------------------------------------------------------
+	def text(text,align,size=22,color=color)
 		self.contents.clear
-		#self.contents.font.name = $fontname
 		self.contents.font.size = size
 		self.contents.font.color = color
-    self.contents.draw_text(0,12,self.width-36,size,text,align)
-  end
-	
-  #--------------------------------------------------------------------------
-  #--------------------------------------------------------------------------
-  def item(rect,text,align=1,size=22,color=system_color)
-		#self.contents.font.name = $fontname
-		self.contents.font.size = size
-		self.contents.font.color = color
-   self.contents.draw_text(rect.x,rect.y,rect.width,rect.height,text,align)
-  end
+		self.contents.draw_text(0,12,self.width-36,size,text,align)
+	end
 
+	#--------------------------------------------------------------------------
+	#--------------------------------------------------------------------------
+	def item(rect,text,align=1,size=22,color=color)
+		self.contents.font.size = size
+		self.contents.font.color = color
+		self.contents.draw_text(rect.x,rect.y,rect.width,rect.height,text,align)
+	end
+  
+	def icon(x,y,bitmap)
+		self.contents.blt(x,y,bitmap,bitmap.rect)
+	end
 #==============================================================================
 # END OF Window_Base
 #==============================================================================
@@ -88,7 +88,7 @@ class Window_Progress < Window_Base
 		@spr.z = 200
 		@spr.bitmap = Bitmap.new(640,480)
 		@spr.bitmap.fill_rect(0,0,640,480,Color.new(0,0,0,30))
-		self.windowskin = RPG::Cache.windowskin("Progress")
+		self.windowskin = RPG::Cache.img("Progress")
 		self.z = 201
   end
 	
@@ -247,8 +247,8 @@ class Window_Select < Window_Base
 		self.z = 110
 		#self.contents.font.name = $fontname
 		self.contents.font.size = 22
-		self.contents.font.color = system_color
-		self.windowskin = RPG::Cache.windowskin("Select")
+		self.contents.font.color = color
+		self.windowskin = RPG::Cache.img("Select")
 		@index = 1
 		@line_dex = 0
 		@states = []
@@ -559,13 +559,13 @@ class Window_SelectMenu < Window_Base
 		super(78, 312, 466, 128)
 		self.visible = false
 		@select = Window_Select.new
-		@win_append = Window_Append.new
+		@win_append = Window_Append.new(@select)
 		self.z = 120
 		#self.contents.font.name = $fontname
 		self.contents.font.size = 30
-		self.contents.font.color = system_color
+		self.contents.font.color = color
 		self.opacity = 0
-		self.windowskin = RPG::Cache.windowskin("Progress")
+		self.windowskin = RPG::Cache.img("Progress")
 		@goal = ""
 		@index = 1
 		@all = 0
@@ -627,8 +627,8 @@ class Window_SelectMenu < Window_Base
 								@win_append.update
 								break if !@win_append.visible
 							end
-						elsif @goal == "write"
-							Write::write_selected_maps(@select.maps_array,self)
+						elsif @goal == "import"
+							Import::import_selected_maps(@select.maps_array,self)
 						end
 						Input.update
 						self.cursor_rect.empty
@@ -704,7 +704,7 @@ class Window_New < Window_Base
 		self.back_opacity = 0
 		self.active = false
 		self.pause = false
-		self.windowskin = RPG::Cache.windowskin("Window")
+		self.windowskin = RPG::Cache.img("Window")
 		@parent = parent
 		@index = 0
 		@word = []
@@ -807,18 +807,19 @@ class Window_Append < Window_Base
 #		-@mode:					String of the type of action ('all','select',
 #																									'comevent','module')
 #========================================================================
-  def initialize
+  def initialize(parent = nil)
 		super(247, 167, 146, 146)
 		self.visible = false
 		self.z = 120
 		#self.contents.font.name = $fontname
 		self.contents.font.size = 28
-		self.windowskin = RPG::Cache.windowskin("Append")
+		self.windowskin = RPG::Cache.img("Append")
 		@window_new = Window_New.new(self)
 		@index = 0
 		@word = []
 		@maps_array = []
 		@mode = ""
+		@parent = parent if parent
 		refresh
   end
 	
@@ -866,6 +867,8 @@ class Window_Append < Window_Base
 						Extract::extract_all_maps
 					elsif @mode == "select"
 						Extract::extract_selected_maps(@maps_array,$scene.select_menu)
+					elsif @mode == "commons"
+						Extract::extract_comm_events
 					end
 					close
 				when 1
@@ -873,6 +876,8 @@ class Window_Append < Window_Base
 						Extract::extract_all_maps(true)
 					elsif @mode == "select"
 						Extract::extract_selected_maps(@maps_array,$scene.select_menu,true)
+					elsif @mode == "commons"
+						Extract::extract_comm_events(true)
 					end
 					close
 				when 2
@@ -889,6 +894,7 @@ class Window_Append < Window_Base
 			end
 		elsif Input.trigger?(Input::B)
 			close
+			@parent.mode = "menu" if @parent
 		end
 	end
 	
