@@ -31,7 +31,7 @@ module Extract
 		
 		for i in arr
 			id = sprintf("%03d",i)
-			print [$ROOT,File.exist?("#{$ROOT}/Data/Map#{id}.rxdata")]
+			#print [$ROOT,File.exist?("#{$ROOT}/Data/Map#{id}.rxdata")]
 			map = load_data("#{$ROOT}/Data/Map#{id}.rxdata")
 			na.push(i) if self.check_for_text(map)
 			Graphics.update
