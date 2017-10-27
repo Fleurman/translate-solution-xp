@@ -3,8 +3,10 @@ This tool aim to provide a translating solution for RPG Maker XP games.
 TTXP can extract texts from the .rxdata files into .txt files and import them back.
 
 My TODO list:
-- add comments everywhere !
+- redo the GUI with mouse control
+- comment the scripts
 - implement a multilanguage interface & methods
+- include the RMVXace support
 
 ## How-To
 
